@@ -1,6 +1,11 @@
+'use client';
+
 import Link from 'next/link';
+import { useSocket } from './useSocket';
 
 export default function Home() {
+  useSocket();
+
   return (
     <section className='flex flex-col items-center gap-10 pt-16'>
       <h1 className='text-4xl font-semibold'>Select Party</h1>
