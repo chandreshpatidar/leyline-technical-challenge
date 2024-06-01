@@ -19,7 +19,7 @@ const ChatFooter: React.FC<ChatFooterProps> = ({ children, disabled, onSend }) =
         <button
           disabled={disabled}
           onClick={onSend}
-          className='rounded-full p-3 bg-indigo-500 text-white hover:bg-indigo-600'
+          className='rounded-full p-3 bg-indigo-500 text-white disabled:cursor-not-allowed disabled:hover:bg-indigo-500 hover:bg-indigo-600'
         >
           <SendHorizonal size={20} />
         </button>
