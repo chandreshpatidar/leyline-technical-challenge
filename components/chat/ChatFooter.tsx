@@ -3,10 +3,11 @@ import React from 'react';
 
 interface ChatFooterProps {
   children: React.ReactNode;
-  disabled: boolean;
+  disabled?: boolean;
+  onSend: () => void;
 }
 
-const ChatFooter: React.FC<ChatFooterProps> = ({ children }) => {
+const ChatFooter: React.FC<ChatFooterProps> = ({ children, disabled, onSend }) => {
   return (
     <div
       id={'chatFooter'}
@@ -15,7 +16,11 @@ const ChatFooter: React.FC<ChatFooterProps> = ({ children }) => {
       <div className='flex items-center gap-3 flex-wrap flex-grow'>{children}</div>
 
       <div>
-        <button className='rounded-full p-3 bg-indigo-500 text-white hover:bg-indigo-600'>
+        <button
+          disabled={disabled}
+          onClick={onSend}
+          className='rounded-full p-3 bg-indigo-500 text-white hover:bg-indigo-600'
+        >
           <SendHorizonal size={20} />
         </button>
       </div>
