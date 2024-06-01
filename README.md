@@ -57,7 +57,14 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ### Additional Points
 
 1. As a frontend developer, I've used a local storage to store the messages and other required data
+2. I've created a UI in the form of chat board to keep it more attractive (and keep all the settlement history between Party A and Party B) instead of creating a simple box which shows only latest data
+3. As a frontend developer, I setup the socket server in the same application (Next.Js) instead of creating a new backend repo
+4. I've deployed this application on [Railway](https://railway.app/), as vercel [don't support sockets](https://vercel.com/guides/do-vercel-serverless-functions-support-websocket-connections) directly
+
+
+### Things to improve
+
+1. Add backend and database to keep data long live
 2. To make UI more user friendly, we can add here a tooltip messages in form, to show why button is disabled
-3. I've created a UI in the form of chat board to keep it more attractive (and keep all the settlement history between Party A and Party B) instead of creating a simple box which shows only latest data
-4. As a frontend developer, I setup the socket server in the same application (Next.Js) instead of creating a new backend repo
-5. I've deployed this application on [Railway](https://railway.app/), as vercel doesn't support websocket and custom server file
+3. Add a logic to scroll chat body to latest message, currently user need to scroll manually
+4. Can break down party-a and party-b page's code into sub components to keep it more readable (eg. can keep business logic and UI components in separate files)
