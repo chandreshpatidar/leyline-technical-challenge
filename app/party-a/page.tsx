@@ -2,7 +2,7 @@
 
 import { ChatBody, ChatContainer, ChatFooter, ChatHeader, ChatMessage } from '@/components/chat';
 import { Input } from '@/components/ui/Input';
-import { Message } from '@/typedefs/chat';
+import { Message, SettlementStatus } from '@/typedefs/chat';
 import React, { useCallback, useMemo, useState } from 'react';
 
 export default function PartyA_Page() {
@@ -24,6 +24,7 @@ export default function PartyA_Page() {
           message,
           amount,
           timestamp: new Date().toISOString(),
+          status: SettlementStatus.PENDING,
         },
       ]);
 
