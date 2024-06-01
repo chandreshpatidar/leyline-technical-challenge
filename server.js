@@ -23,6 +23,17 @@ app.prepare().then(function () {
 
   // Set up the connection event listener for Socket.IO
   io.on('connection', (socket) => {
+    // Set up the message event listener for the connected socket
+    socket.on('message', (message) => {
+      if (message?.sender === 'Party A') {
+        // Broadcast a sync message to all other connected clients
+        socket.broadcast.emit('sync-message', { actionType: 'sync', message });
+      } else {
+        // Broadcast an alert message to all other connected clients
+        socket.broadcast.emit('sync-message', { actionType: 'alert', message });
+      }
+    });
+
     // Set up the disconnect event listener for the connected socket
     socket.on('disconnect', () => {
       // Add logic to handle disconnection

@@ -7,6 +7,9 @@ import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'r
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useSettlementStore } from '@/store/settlement/store';
 import { calculateChatBoxBodyHeight } from '@/lib/utils';
+import { socket } from '../socket';
+import { SocketActionTypes, SocketActions, SyncMessageOptions } from '@/typedefs/socket';
+import { UserIds } from '@/typedefs/user';
 
 export default function PartyB_Page() {
   // Extracting state and actions from the settlement store
@@ -19,12 +22,12 @@ export default function PartyB_Page() {
 
   // Memoize the condition to disable the message send button
   const disableSendButton = useMemo(() => {
-    return !message?.status || messages[messages.length - 1]?.sender === 'Party B';
+    return !message?.status || messages[messages.length - 1]?.sender === UserIds.PARTY_B;
   }, [message, messages]);
 
   // Memoize the condition to show the footer based on the settlement status and the sender of the first message
   const showFooter = useMemo(() => {
-    return status !== SettlementStatus.SETTLED && messages[0]?.sender === 'Party A';
+    return status !== SettlementStatus.SETTLED && messages[0]?.sender === UserIds.PARTY_A;
   }, [status, messages]);
 
   // Recalculate chat box height whenever the footer visibility changes
@@ -32,13 +35,34 @@ export default function PartyB_Page() {
     calculateChatBoxBodyHeight();
   }, [showFooter]);
 
+  // Handle sync messages from the socket
+  useEffect(() => {
+    const syncStore = (options: SyncMessageOptions) => {
+      if (options.actionType === SocketActionTypes.SYNC) {
+        // Rehydrate the store
+        useSettlementStore.persist.rehydrate();
+
+        // Recalculate chat box height
+        calculateChatBoxBodyHeight();
+      }
+    };
+
+    // Set up event listener for sync messages
+    socket.on(SocketActions.SYNC_MESSAGE, syncStore);
+
+    // Cleanup function to remove event listener on unmount
+    return () => {
+      socket.off(SocketActions.SYNC_MESSAGE);
+    };
+  }, []);
+
   // Handle sending the message
   const handleSendMessage = useCallback(() => {
     if (message?.status && status !== SettlementStatus.SETTLED) {
       // Add a new message
       addMessage({
         id: Date.now().toString(),
-        sender: 'Party B',
+        sender: UserIds.PARTY_B,
         message: message?.message,
         status: message?.status,
         timestamp: new Date().toISOString(),
@@ -51,6 +75,9 @@ export default function PartyB_Page() {
 
       // Update the status of the settlement
       setStatus(message.status);
+
+      // Send the message to the server
+      socket.emit(SocketActions.MESSAGE, message);
 
       // Clear the message input fields
       setMessage(undefined);
@@ -77,7 +104,7 @@ export default function PartyB_Page() {
             <ChatMessage
               key={message.id}
               message={message}
-              userId='Party B'
+              userId={UserIds.PARTY_B}
             />
           ))}
 
