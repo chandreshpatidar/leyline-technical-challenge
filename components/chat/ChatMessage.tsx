@@ -1,18 +1,30 @@
 import React from 'react';
+import { DateTime } from 'luxon';
 
 interface ChatMessageProps {
-  message: string;
+  message?: string;
+  amount?: number;
   sender: boolean;
+  timestamp: string;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ message, sender }) => {
+const ChatMessage: React.FC<ChatMessageProps> = (props) => {
+  const { message, sender, amount, timestamp } = props;
+
   return (
     <div
       className={`relative px-4 py-2 rounded-md font-normal text-base text-white max-w-[70%] w-fit ${
         sender ? ' self-end bg-cyan-900' : 'self-start bg-slate-700'
       }`}
     >
-      <p className='z-10'>{message}</p>
+      <div className='flex flex-col gap-1'>
+        {amount && <p className='z-10'>Amount: $ {amount} </p>}
+        {message && <p className='z-10 text-sm'>{message}</p>}
+      </div>
+
+      <small className='text-right block mt-4'>
+        <i>{DateTime.fromISO(timestamp).toRelative()}</i>
+      </small>
 
       <div
         className={`absolute z-0 top-0 border-[24px] border-transparent rounded-md  ${
