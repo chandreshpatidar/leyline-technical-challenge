@@ -17,6 +17,11 @@ export default function PartyB_Page() {
   // State to manage the current message being created
   const [message, setMessage] = useState<Message | undefined>();
 
+  // Memoize the condition to disable the message send button
+  const disableSendButton = useMemo(() => {
+    return !message?.status || messages[messages.length - 1]?.sender === 'Party B';
+  }, [message, messages]);
+
   // Memoize the condition to show the footer based on the settlement status and the sender of the first message
   const showFooter = useMemo(() => {
     return status !== SettlementStatus.SETTLED && messages[0]?.sender === 'Party A';
@@ -85,7 +90,7 @@ export default function PartyB_Page() {
         {/* Show the footer if the settlement is not settled and Party A has initialized the settlement */}
         {showFooter && (
           <ChatFooter
-            disabled={!message?.status}
+            disabled={disableSendButton}
             onSend={handleSendMessage}
           >
             <div className='flex items-center gap-3'>

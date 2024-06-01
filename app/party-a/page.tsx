@@ -17,6 +17,11 @@ export default function PartyA_Page() {
   const [message, setMessage] = useState<Message | undefined>();
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
+  // Memoize the condition to disable the message send button
+  const disableSendButton = useMemo(() => {
+    return !message?.amount || (messages[messages.length - 1]?.sender === 'Party A' && !isEditing);
+  }, [message, messages, isEditing]);
+
   // Memoize the condition to show the footer based on the settlement status
   const showFooter = useMemo(() => {
     return status !== SettlementStatus.SETTLED;
@@ -101,7 +106,7 @@ export default function PartyA_Page() {
         {/* Show the footer if the settlement is not settled */}
         {showFooter && (
           <ChatFooter
-            disabled={!message?.amount}
+            disabled={disableSendButton}
             onSend={handleSendMessage}
           >
             <div className='flex items-center gap-3'>
