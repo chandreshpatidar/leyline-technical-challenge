@@ -1,15 +1,17 @@
 import React from 'react';
 import { DateTime } from 'luxon';
+import { SettlementStatus } from '@/typedefs/chat';
 
 interface ChatMessageProps {
-  message?: string;
-  amount?: number;
   sender: boolean;
   timestamp: string;
+  message?: string;
+  amount?: number;
+  status?: SettlementStatus;
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = (props) => {
-  const { message, sender, amount, timestamp } = props;
+  const { message, sender, amount, timestamp, status } = props;
 
   return (
     <div
@@ -18,6 +20,7 @@ const ChatMessage: React.FC<ChatMessageProps> = (props) => {
       }`}
     >
       <div className='flex flex-col gap-1'>
+        {status && <p className='z-10 capitalize'>Staus: {status} </p>}
         {amount && <p className='z-10'>Amount: $ {amount} </p>}
         {message && <p className='z-10 text-sm'>{message}</p>}
       </div>
