@@ -2,21 +2,13 @@
 
 import { ChatBody, ChatContainer, ChatFooter, ChatHeader, ChatMessage } from '@/components/chat';
 import { Input } from '@/components/ui/Input';
-import { Message, SettlementStatus } from '@/typedefs/chat';
+import { SettlementStatus } from '@/typedefs/chat';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useSettlementStore } from '@/store/settlement/store';
 
 export default function PartyB_Page() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [status, setStatus] = useState<SettlementStatus | undefined>();
+  const { addMessage, messages, setStatus, status, updateMessage } = useSettlementStore((state) => state);
   const [message, setMessage] = useState<string>('');
 
   const disableSendButton = useMemo(() => {
@@ -25,21 +17,17 @@ export default function PartyB_Page() {
 
   const handleSendMessage = useCallback(() => {
     if (status) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          id: Date.now().toString(),
-          sender: 'Party B',
-          message,
-          status,
-          timestamp: new Date().toISOString(),
-        },
-      ]);
+      addMessage({
+        id: Date.now().toString(),
+        sender: 'Party B',
+        message,
+        status,
+        timestamp: new Date().toISOString(),
+      });
 
-      setStatus(undefined);
       setMessage('');
     }
-  }, [status, message]);
+  }, [status, addMessage, message]);
 
   return (
     <div>

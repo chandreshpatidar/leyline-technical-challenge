@@ -2,11 +2,11 @@
 
 import { ChatBody, ChatContainer, ChatFooter, ChatHeader, ChatMessage } from '@/components/chat';
 import { Input } from '@/components/ui/Input';
-import { Message, SettlementStatus } from '@/typedefs/chat';
+import { useSettlementStore } from '@/store/settlement/store';
 import React, { useCallback, useMemo, useState } from 'react';
 
 export default function PartyA_Page() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { addMessage, messages, setStatus, status, updateMessage } = useSettlementStore((state) => state);
   const [amount, setAmount] = useState<number | undefined>();
   const [message, setMessage] = useState<string>('');
 
@@ -16,22 +16,18 @@ export default function PartyA_Page() {
 
   const handleSendMessage = useCallback(() => {
     if (amount) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          id: Date.now().toString(),
-          sender: 'Party A',
-          message,
-          amount,
-          timestamp: new Date().toISOString(),
-          status: SettlementStatus.PENDING,
-        },
-      ]);
+      addMessage({
+        id: Date.now().toString(),
+        sender: 'Party A',
+        message,
+        amount,
+        timestamp: new Date().toISOString(),
+      });
 
       setAmount(undefined);
       setMessage('');
     }
-  }, [amount, message]);
+  }, [amount, message, addMessage]);
 
   return (
     <div>
@@ -43,6 +39,7 @@ export default function PartyA_Page() {
               key={message.id}
               message={message.message}
               amount={message.amount}
+              status={message.status}
               sender={message.sender === 'Party A'}
               timestamp={message.timestamp}
             />
